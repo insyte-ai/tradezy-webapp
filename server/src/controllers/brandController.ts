@@ -67,7 +67,7 @@ const brandController = {
   },
 
   // Get brand by slug
-  async getBrandBySlug(req: Request, res: Response) {
+  async getBrandBySlug(req: Request, res: Response): Promise<Response> {
     try {
       const { slug } = req.params;
 
@@ -97,7 +97,7 @@ const brandController = {
         .sort({ isPremium: -1, 'ratings.average': -1 })
         .limit(8);
 
-      res.json({
+      return res.json({
         brand,
         topProducts,
         stores,
@@ -110,12 +110,12 @@ const brandController = {
         }
       });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      return res.status(500).json({ message: error.message });
     }
   },
 
   // Get featured brands
-  async getFeaturedBrands(req: Request, res: Response) {
+  async getFeaturedBrands(_req: Request, res: Response) {
     try {
       const brands = await Brand.find({ featured: true })
         .select('name slug logo description metrics')
@@ -146,7 +146,7 @@ const brandController = {
   },
 
   // Update brand (admin only)
-  async updateBrand(req: Request, res: Response) {
+  async updateBrand(req: Request, res: Response): Promise<Response> {
     try {
       const { id } = req.params;
       
@@ -164,9 +164,9 @@ const brandController = {
         return res.status(404).json({ message: 'Brand not found' });
       }
 
-      res.json(brand);
+      return res.json(brand);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
   }
 };
