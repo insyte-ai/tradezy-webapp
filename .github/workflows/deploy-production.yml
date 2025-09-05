@@ -48,7 +48,7 @@ jobs:
       - name: Build Frontend Docker image
         run: |
           docker build --no-cache \
-            --build-arg REACT_APP_API_URL=${{ secrets.PRODUCTION_API_URL }} \
+            --build-arg VITE_API_URL=https://tradezy.me/api \
             -t $REGISTRY_PATH/$FRONTEND_IMAGE:$GITHUB_SHA \
             -t $REGISTRY_PATH/$FRONTEND_IMAGE:latest \
             ./client
