@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tradezy-ingress
+  namespace: app
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "tradezy-app-ip"
+    networking.gke.io/managed-certificates: "tradezy-certificate"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "tradezy-ssl-cert"
+spec:
+  rules:
+    - host: tradezy.me
+      http:
+        paths:
+          - path: /api/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 5000
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000
+---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: tradezy-certificate
+  namespace: app
+spec:
+  domains:
+    - tradezy.me
+    - www.tradezy.me

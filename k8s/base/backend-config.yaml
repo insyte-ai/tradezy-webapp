@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: app
+data:
+  cors_origin: "https://tradezy.me"
+  frontend_url: "https://tradezy.me"

@@ -41,3 +41,19 @@ coverage/
 *.log
 tmp/
 temp/
+
+# Security - Service Account Keys
+github-actions-key.json
+*.json.key
+*-key.json
+service-account*.json
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# Documentation with sensitive information
+docs/

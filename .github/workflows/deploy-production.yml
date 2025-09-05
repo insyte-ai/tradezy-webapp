@@ -1,0 +1,91 @@
+name: Build and Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GKE_CLUSTER: tradezy-cluster
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  BACKEND_IMAGE: tradezy-backend
+  FRONTEND_IMAGE: tradezy-frontend
+  REGISTRY_HOSTNAME: ${{ secrets.GCP_REGION }}-docker.pkg.dev
+  REGISTRY_PATH: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/tradezy-repo
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Build Backend Docker image
+        run: |
+          docker build --no-cache \
+            -t $REGISTRY_PATH/$BACKEND_IMAGE:$GITHUB_SHA \
+            -t $REGISTRY_PATH/$BACKEND_IMAGE:latest \
+            ./server
+
+      - name: Build Frontend Docker image
+        run: |
+          docker build --no-cache \
+            --build-arg REACT_APP_API_URL=${{ secrets.PRODUCTION_API_URL }} \
+            -t $REGISTRY_PATH/$FRONTEND_IMAGE:$GITHUB_SHA \
+            -t $REGISTRY_PATH/$FRONTEND_IMAGE:latest \
+            ./client
+
+      - name: Push Backend Docker image
+        run: |
+          docker push $REGISTRY_PATH/$BACKEND_IMAGE:$GITHUB_SHA
+          docker push $REGISTRY_PATH/$BACKEND_IMAGE:latest
+
+      - name: Push Frontend Docker image
+        run: |
+          docker push $REGISTRY_PATH/$FRONTEND_IMAGE:$GITHUB_SHA
+          docker push $REGISTRY_PATH/$FRONTEND_IMAGE:latest
+
+      - name: Set up Kustomize
+        run: |
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v5.0.3/kustomize_5.0.3_linux_amd64
+          chmod u+x ./kustomize
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+
+      - name: Deploy to GKE
+        run: |
+          cd k8s/overlays/production
+          
+          # Update images with new tags
+          ../../../kustomize edit set image \
+            gcr.io/PROJECT_ID/tradezy-backend=$REGISTRY_PATH/$BACKEND_IMAGE:$GITHUB_SHA \
+            gcr.io/PROJECT_ID/tradezy-frontend=$REGISTRY_PATH/$FRONTEND_IMAGE:$GITHUB_SHA
+          
+          # Apply the Kubernetes manifests
+          ../../../kustomize build . | kubectl apply -f -
+          
+          # Wait for deployments to complete
+          kubectl rollout status deployment/backend -n app
+          kubectl rollout status deployment/frontend -n app
