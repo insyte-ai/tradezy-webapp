@@ -15,6 +15,7 @@ import CategoryPage from './pages/CategoryPage';
 import StoresPage from './pages/StoresPage';
 import StoreDetailPage from './pages/StoreDetailPage';
 import BrandsPage from './pages/BrandsPage';
+import BrandDetailPage from './pages/BrandDetailPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
 import SellerSignupPage from './pages/auth/SellerSignupPage';
@@ -42,7 +43,7 @@ const App: React.FC = () => {
             <Route path="stores" element={<StoresPage />} />
             <Route path="stores/:slug" element={<StoreDetailPage />} />
             <Route path="brands" element={<BrandsPage />} />
-            <Route path="brands/:id" element={<BrandsPage />} />
+            <Route path="brands/:slug" element={<BrandDetailPage />} />
           </Route>
 
           <Route path="/auth" element={<AuthLayout />}>

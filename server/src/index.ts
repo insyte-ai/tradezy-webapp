@@ -15,6 +15,7 @@ import onboardingRoutes from './routes/onboardingRoutes';
 import categoryRoutes from './routes/categoryRoutes';
 import productRoutes from './routes/productRoutes';
 import storeRoutes from './routes/storeRoutes';
+import brandRoutes from './routes/brandRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -54,6 +55,7 @@ app.use('/api/onboarding', onboardingRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/stores', storeRoutes);
+app.use('/api/brands', brandRoutes);
 
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });

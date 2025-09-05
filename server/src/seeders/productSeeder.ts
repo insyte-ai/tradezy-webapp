@@ -4,12 +4,13 @@ import User from '../models/User';
 import { UserRole } from '../models/User';
 import slugify from 'slugify';
 import pexelsService from '../services/pexelsService';
+import Brand from '../models/Brand';
 
 const products = [
   {
     name: 'Luxury Arabic Majlis Sofa Set',
     description: 'Traditional Arabic majlis sofa set with premium velvet upholstery and gold accents. Perfect for luxury homes and hotels in the Gulf region. Set includes 2 three-seater sofas, 2 single chairs, and center table.',
-    brand: 'Majlis Interiors',
+    brand: 'Desert Bloom Decor',
     basePrice: {
       wholesale: 8500,
       minQuantity: 2,
@@ -55,7 +56,7 @@ const products = [
   {
     name: 'Smart Home Automation Hub Pro',
     description: 'Advanced smart home control hub compatible with all major IoT devices. Features Arabic and English voice control, supports up to 200 devices, ideal for large villas and commercial properties.',
-    brand: 'Desert Tech Solutions',
+    brand: 'Smart Tech Solutions',
     basePrice: {
       wholesale: 1250,
       minQuantity: 10,
@@ -101,7 +102,7 @@ const products = [
   {
     name: 'Executive Ergonomic Office Chair Collection',
     description: 'Premium ergonomic office chairs designed for the Middle East climate. Features breathable mesh back, adjustable lumbar support, and luxury leather seating. Bulk orders for corporate offices and co-working spaces.',
-    brand: 'Gulf Office Pro',
+    brand: 'Oasis Office Supplies',
     basePrice: {
       wholesale: 950,
       minQuantity: 20,
@@ -148,7 +149,7 @@ const products = [
   {
     name: 'Modern Islamic Geometric Wall Art Set',
     description: 'Contemporary Islamic geometric pattern wall art collection. Laser-cut metal designs with gold and silver finishes. Perfect for hotels, restaurants, and luxury residences.',
-    brand: 'Oasis Living',
+    brand: 'Nest Home',
     basePrice: {
       wholesale: 650,
       minQuantity: 5,
@@ -194,7 +195,7 @@ const products = [
   {
     name: 'Smart AC Control System Bundle',
     description: 'Intelligent air conditioning control system for commercial and residential properties. Includes smart thermostats, motion sensors, and central hub. Reduces energy consumption by up to 40%.',
-    brand: 'Emirate Smart Systems',
+    brand: 'Smart Tech Solutions',
     basePrice: {
       wholesale: 2200,
       minQuantity: 5,
@@ -258,15 +259,19 @@ export const seedProducts = async () => {
     await Product.createIndexes();
     console.log('📇 Recreated product indexes');
 
-    // Get categories and sellers
+    // Get categories, sellers and brands
     const categories = await Category.find({});
     const sellers = await User.find({ role: UserRole.SELLER });
+    const brands = await Brand.find({});
 
     if (categories.length === 0) {
       throw new Error('No categories found. Please run category seeder first.');
     }
     if (sellers.length === 0) {
       throw new Error('No sellers found. Please run seller seeder first.');
+    }
+    if (brands.length === 0) {
+      throw new Error('No brands found. Please run brand seeder first.');
     }
 
     // Create a map for easy lookup

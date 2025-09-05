@@ -7,6 +7,7 @@ import { seedCategories } from './categorySeeder';
 import { seedSellers } from './sellerSeeder';
 import { seedStores } from './storeSeeder';
 import { seedProducts } from './productSeeder';
+import seedBrands from './brandSeeder';
 
 const runSeeders = async () => {
   try {
@@ -22,15 +23,19 @@ const runSeeders = async () => {
     console.log('📂 Seeding categories...');
     await seedCategories();
 
-    // 2. Seed sellers
+    // 2. Seed brands
+    console.log('\n🏷️ Seeding brands...');
+    await seedBrands();
+
+    // 3. Seed sellers
     console.log('\n👥 Seeding sellers...');
     await seedSellers();
 
-    // 3. Seed stores
+    // 4. Seed stores
     console.log('\n🏪 Seeding stores...');
     await seedStores();
 
-    // 4. Seed products
+    // 5. Seed products
     console.log('\n📦 Seeding products...');
     await seedProducts();
 
@@ -40,6 +45,7 @@ const runSeeders = async () => {
     console.log('Summary:');
     console.log('--------');
     console.log('✅ 5 Categories created');
+    console.log('✅ 5 Brands created');
     console.log('✅ 5 Sellers created');
     console.log('✅ 5 Stores created');
     console.log('✅ 5 Products created');
