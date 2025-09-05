@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Product } from '../../services/productService';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
+import slugify from 'slugify';
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +12,16 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, showPrice = false }) => {
+  const navigate = useNavigate();
+
+  const handleBrandClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.brand) {
+      const brandSlug = slugify(product.brand, { lower: true, strict: true });
+      navigate(`/brands/${brandSlug}`);
+    }
+  };
   const renderRating = () => {
     const rating = product.ratings?.average || 0;
     const stars = [];
@@ -68,7 +79,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, showPrice 
           </div>
 
           <div className="flex items-center gap-4 text-sm text-neutral-600 mb-3">
-            <span className="font-medium text-primary-600">{product.brand}</span>
+            <span 
+              className="font-medium text-primary-600 hover:text-primary-700 cursor-pointer"
+              onClick={handleBrandClick}
+            >
+              {product.brand}
+            </span>
             <span>MOQ: {product.specifications?.moq || 1} units</span>
             <span>{product.specifications?.leadTime || 'Contact for lead time'}</span>
           </div>
@@ -140,7 +156,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, viewMode, showPrice 
       {/* Content */}
       <div className="p-4">
         <div className="mb-2">
-          <span className="text-xs font-medium text-primary-600">
+          <span 
+            className="text-xs font-medium text-primary-600 hover:text-primary-700 cursor-pointer"
+            onClick={handleBrandClick}
+          >
             {product.brand}
           </span>
         </div>

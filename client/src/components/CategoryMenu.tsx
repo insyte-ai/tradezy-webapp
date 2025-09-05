@@ -98,6 +98,9 @@ const CategoryMenu: React.FC = () => {
         <Link to="/products" className="text-sm text-neutral-700 hover:text-neutral-900 py-6">
           All Products
         </Link>
+        <Link to="/brands" className="text-sm text-neutral-700 hover:text-neutral-900 py-6">
+          Brands
+        </Link>
         <Link to="/stores" className="text-sm text-neutral-700 hover:text-neutral-900 py-6">
           Stores
         </Link>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { fetchProductBySlug } from '../store/slices/productSlice';
 import LoadingSpinner from '../components/common/LoadingSpinner';
+import slugify from 'slugify';
 import { 
   ShoppingCartIcon, 
   TruckIcon, 
@@ -135,7 +136,12 @@ const ProductDetailPage: React.FC = () => {
         <div>
           {/* Brand */}
           {product.brand && (
-            <p className="text-sm font-medium text-primary-600 mb-2">{product.brand}</p>
+            <Link
+              to={`/brands/${slugify(product.brand, { lower: true, strict: true })}`}
+              className="inline-block text-sm font-medium text-primary-600 hover:text-primary-700 mb-2"
+            >
+              {product.brand}
+            </Link>
           )}
           
           <h1 className="text-3xl font-bold text-neutral-900 mb-4">{product.name}</h1>
