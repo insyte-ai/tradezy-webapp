@@ -7,7 +7,6 @@ metadata:
     kubernetes.io/ingress.class: "gce"
     kubernetes.io/ingress.global-static-ip-name: "tradezy-app-ip"
     networking.gke.io/managed-certificates: "tradezy-certificate"
-    ingress.gcp.kubernetes.io/pre-shared-cert: "tradezy-ssl-cert"
 spec:
   rules:
     - host: tradezy.me
