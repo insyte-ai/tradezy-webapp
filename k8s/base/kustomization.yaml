@@ -9,6 +9,7 @@ resources:
   - backend-deployment.yaml
   - backend-service.yaml
   - backend-config.yaml
+  - backend-config-gcp.yaml
   - frontend-deployment.yaml
   - frontend-service.yaml
 

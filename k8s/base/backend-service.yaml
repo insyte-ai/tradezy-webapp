@@ -5,6 +5,8 @@ metadata:
   namespace: app
   labels:
     app: backend
+  annotations:
+    cloud.google.com/backend-config: '{"default": "backend-config-gcp"}'
 spec:
   type: NodePort
   selector:
