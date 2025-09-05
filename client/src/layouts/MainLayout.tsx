@@ -6,6 +6,7 @@ import { logout } from '../store/slices/authSlice';
 import { ShoppingBagIcon, UserIcon, Bars3Icon, MagnifyingGlassIcon, GlobeAmericasIcon } from '@heroicons/react/24/outline';
 import CategoryMenu from '../components/CategoryMenu';
 import MobileCategoryMenu from '../components/MobileCategoryMenu';
+import PendingApprovalBanner from '../components/PendingApprovalBanner';
 
 const MainLayout: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Pending Approval Banner */}
+      <PendingApprovalBanner />
+      
       {/* Top Banner */}
       <div className="bg-neutral-50 py-2 text-center text-xs border-b border-neutral-200">
         <p className="text-neutral-600">

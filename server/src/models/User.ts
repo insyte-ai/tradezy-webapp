@@ -14,27 +14,67 @@ export enum UserStatus {
   SUSPENDED = 'suspended'
 }
 
+export interface IBuyerProfile {
+  businessName: string;
+  website?: string;
+  city: string;
+  contactName: string;
+  contactPhone: string;
+  contactJobTitle: string;
+  tradeLicenseNumber: string;
+  vatTrnNumber: string;
+}
+
+export interface ISellerProfile {
+  brandName: string;
+  storeName: string;
+  primaryCategory: string;
+  businessName: string;
+  logo?: string;
+  website?: string;
+  address: {
+    city: string;
+    state: string;
+    country: string;
+  };
+  baseCurrency: string;
+  contactName: string;
+  contactPhone: string;
+  contactJobTitle: string;
+  tradeLicenseNumber: string;
+  vatTrnNumber: string;
+}
+
 export interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
   status: UserStatus;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   phoneNumber?: string;
+  onboardingCompleted: boolean;
+  onboardingStep?: number;
+  buyerProfile?: IBuyerProfile;
+  sellerProfile?: ISellerProfile;
   company?: {
-    name: string;
+    name?: string;
     registrationNumber?: string;
     taxId?: string;
+    tradeLicenseNumber?: string;
     website?: string;
     description?: string;
     logo?: string;
-    address: {
-      street: string;
-      city: string;
-      state: string;
-      country: string;
-      zipCode: string;
+    industry?: string;
+    size?: string;
+    yearEstablished?: number;
+    monthlyVolume?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      country?: string;
+      postalCode?: string;
     };
   };
   verificationDocuments?: Array<{
@@ -48,6 +88,19 @@ export interface IUser extends Document {
   passwordResetExpires?: Date;
   refreshTokens: string[];
   lastLogin?: Date;
+  seller?: {
+    categories?: string[];
+    currencies?: string[];
+    warehouseLocations?: string[];
+    shippingMethods?: string[];
+    bankAccount?: {
+      bankName?: string;
+      accountName?: string;
+      accountNumber?: string;
+      iban?: string;
+      swiftCode?: string;
+    };
+  };
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -78,13 +131,48 @@ const userSchema = new Schema<IUser>({
   },
   firstName: {
     type: String,
-    required: true,
     trim: true
   },
   lastName: {
     type: String,
-    required: true,
     trim: true
+  },
+  onboardingCompleted: {
+    type: Boolean,
+    default: false
+  },
+  onboardingStep: {
+    type: Number,
+    default: 0
+  },
+  buyerProfile: {
+    businessName: String,
+    website: String,
+    city: String,
+    contactName: String,
+    contactPhone: String,
+    contactJobTitle: String,
+    tradeLicenseNumber: String,
+    vatTrnNumber: String
+  },
+  sellerProfile: {
+    brandName: String,
+    storeName: String,
+    primaryCategory: String,
+    businessName: String,
+    logo: String,
+    website: String,
+    address: {
+      city: String,
+      state: String,
+      country: String
+    },
+    baseCurrency: String,
+    contactName: String,
+    contactPhone: String,
+    contactJobTitle: String,
+    tradeLicenseNumber: String,
+    vatTrnNumber: String
   },
   phoneNumber: {
     type: String,
@@ -93,9 +181,7 @@ const userSchema = new Schema<IUser>({
   company: {
     name: {
       type: String,
-      required: function() {
-        return this.role !== UserRole.ADMIN;
-      }
+      required: false  // Will be required during onboarding, not at signup
     },
     registrationNumber: String,
     taxId: String,
@@ -107,8 +193,13 @@ const userSchema = new Schema<IUser>({
       city: String,
       state: String,
       country: String,
-      zipCode: String
-    }
+      postalCode: String
+    },
+    industry: String,
+    size: String,
+    yearEstablished: Number,
+    tradeLicenseNumber: String,
+    monthlyVolume: String
   },
   verificationDocuments: [{
     type: {
@@ -132,7 +223,20 @@ const userSchema = new Schema<IUser>({
   passwordResetToken: String,
   passwordResetExpires: Date,
   refreshTokens: [String],
-  lastLogin: Date
+  lastLogin: Date,
+  seller: {
+    categories: [String],
+    currencies: [String],
+    warehouseLocations: [String],
+    shippingMethods: [String],
+    bankAccount: {
+      bankName: String,
+      accountName: String,
+      accountNumber: String,
+      iban: String,
+      swiftCode: String
+    }
+  }
 }, {
   timestamps: true
 });

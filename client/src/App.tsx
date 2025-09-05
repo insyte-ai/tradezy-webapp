@@ -11,15 +11,22 @@ import DashboardLayout from './layouts/DashboardLayout';
 import HomePage from './pages/HomePage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CategoryPage from './pages/CategoryPage';
+import StoresPage from './pages/StoresPage';
+import StoreDetailPage from './pages/StoreDetailPage';
 import BrandsPage from './pages/BrandsPage';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
+import SellerSignupPage from './pages/auth/SellerSignupPage';
+import EmailVerificationPage from './pages/auth/EmailVerificationPage';
 import SellerDashboard from './pages/seller/SellerDashboard';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 import PrivateRoute from './components/PrivateRoute';
 import { UserRole } from './types/user';
+import BuyerOnboardingFlow from './pages/onboarding/buyer/BuyerOnboardingFlow';
+import SellerOnboardingFlow from './pages/onboarding/seller/SellerOnboardingFlow';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +38,9 @@ const App: React.FC = () => {
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
             <Route path="products/:slug" element={<ProductDetailPage />} />
+            <Route path="categories/:slug" element={<CategoryPage />} />
+            <Route path="stores" element={<StoresPage />} />
+            <Route path="stores/:slug" element={<StoreDetailPage />} />
             <Route path="brands" element={<BrandsPage />} />
             <Route path="brands/:id" element={<BrandsPage />} />
           </Route>
@@ -38,6 +48,17 @@ const App: React.FC = () => {
           <Route path="/auth" element={<AuthLayout />}>
             <Route path="login" element={<LoginPage />} />
             <Route path="signup" element={<SignupPage />} />
+            <Route path="verify-email" element={<EmailVerificationPage />} />
+          </Route>
+
+          <Route path="/seller" element={<AuthLayout />}>
+            <Route path="signup" element={<SellerSignupPage />} />
+            <Route path="apply" element={<SellerSignupPage />} />
+          </Route>
+
+          <Route path="/onboarding">
+            <Route path="buyer" element={<BuyerOnboardingFlow />} />
+            <Route path="seller" element={<SellerOnboardingFlow />} />
           </Route>
 
           <Route

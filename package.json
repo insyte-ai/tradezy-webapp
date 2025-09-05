@@ -16,7 +16,12 @@
     "clean": "rm -rf node_modules server/node_modules client/node_modules",
     "setup": "npm run install-all && cp server/.env.example server/.env"
   },
-  "keywords": ["b2b", "marketplace", "wholesale", "ecommerce"],
+  "keywords": [
+    "b2b",
+    "marketplace",
+    "wholesale",
+    "ecommerce"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {
