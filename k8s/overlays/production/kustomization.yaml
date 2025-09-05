@@ -7,7 +7,6 @@ resources:
   - ../../base
   - ingress.yaml
   - hpa.yaml
-  - frontend-config.yaml
 
 patches:
   - path: backend-deployment-patch.yaml
