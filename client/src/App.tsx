@@ -21,10 +21,14 @@ import SignupPage from './pages/auth/SignupPage';
 import SellerSignupPage from './pages/auth/SellerSignupPage';
 import EmailVerificationPage from './pages/auth/EmailVerificationPage';
 import SellerDashboard from './pages/seller/SellerDashboard';
+import SellerProducts from './pages/seller/Products';
+import ProductForm from './pages/seller/ProductForm';
 import BuyerDashboard from './pages/buyer/BuyerDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
 import PrivateRoute from './components/PrivateRoute';
+import RoleBasedRedirect from './components/common/RoleBasedRedirect';
+import AuthInitializer from './components/auth/AuthInitializer';
 import { UserRole } from './types/user';
 import BuyerOnboardingFlow from './pages/onboarding/buyer/BuyerOnboardingFlow';
 import SellerOnboardingFlow from './pages/onboarding/seller/SellerOnboardingFlow';
@@ -32,11 +36,19 @@ import SellerOnboardingFlow from './pages/onboarding/seller/SellerOnboardingFlow
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <Router>
-        <Toaster position="top-right" />
-        <Routes>
+      <AuthInitializer>
+        <Router>
+          <Toaster position="top-right" />
+          <Routes>
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<HomePage />} />
+            <Route 
+              index 
+              element={
+                <RoleBasedRedirect>
+                  <HomePage />
+                </RoleBasedRedirect>
+              } 
+            />
             <Route path="products" element={<ProductsPage />} />
             <Route path="products/:slug" element={<ProductDetailPage />} />
             <Route path="categories/:slug" element={<CategoryPage />} />
@@ -71,6 +83,9 @@ const App: React.FC = () => {
             }
           >
             <Route index element={<SellerDashboard />} />
+            <Route path="products" element={<SellerProducts />} />
+            <Route path="products/new" element={<ProductForm />} />
+            <Route path="products/:id/edit" element={<ProductForm />} />
           </Route>
 
           <Route
@@ -98,6 +113,7 @@ const App: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
+      </AuthInitializer>
     </Provider>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
@@ -9,10 +9,29 @@ import toast from 'react-hot-toast';
 const SellerSignupPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isLoading } = useSelector((state: RootState) => state.auth);
+  const { isLoading, isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      switch (user.role) {
+        case UserRole.ADMIN:
+          navigate('/admin');
+          break;
+        case UserRole.SELLER:
+          navigate('/seller');
+          break;
+        case UserRole.BUYER:
+          navigate('/buyer');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
 import { login } from '../../store/slices/authSlice';
+import { UserRole } from '../../types/user';
 import toast from 'react-hot-toast';
 
 const LoginPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+  const { isLoading, error, isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      switch (user.role) {
+        case UserRole.ADMIN:
+          navigate('/admin');
+          break;
+        case UserRole.SELLER:
+          navigate('/seller');
+          break;
+        case UserRole.BUYER:
+          navigate('/buyer');
+          break;
+        default:
+          navigate('/');
+      }
+    }
+  }, [isAuthenticated, user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

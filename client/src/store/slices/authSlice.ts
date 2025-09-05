@@ -53,6 +53,22 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+    },
+    authInitialized: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload;
+      state.isLoading = false;
+      if (action.payload) {
+        state.isAuthenticated = true;
+      } else {
+        state.isAuthenticated = false;
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+      }
+    },
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
@@ -60,6 +76,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
     },
     setTokens: (state, action: PayloadAction<{ accessToken: string; refreshToken: string }>) => {
       state.accessToken = action.payload.accessToken;
@@ -83,6 +100,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
+        localStorage.setItem('userId', action.payload.user._id);
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -100,6 +118,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         localStorage.setItem('accessToken', action.payload.accessToken);
         localStorage.setItem('refreshToken', action.payload.refreshToken);
+        localStorage.setItem('userId', action.payload.user._id);
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -111,5 +130,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setTokens } = authSlice.actions;
+export const { logout, setTokens, setUser, authInitialized } = authSlice.actions;
 export default authSlice.reducer;

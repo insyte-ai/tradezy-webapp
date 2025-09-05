@@ -16,9 +16,15 @@ import categoryRoutes from './routes/categoryRoutes';
 import productRoutes from './routes/productRoutes';
 import storeRoutes from './routes/storeRoutes';
 import brandRoutes from './routes/brandRoutes';
+import sellerProductRoutes from './routes/sellerProductRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Serve uploaded files in development
+if (process.env.NODE_ENV === 'development') {
+  app.use('/uploads', express.static('uploads'));
+}
 
 connectDB();
 
@@ -56,6 +62,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/stores', storeRoutes);
 app.use('/api/brands', brandRoutes);
+app.use('/api/seller', sellerProductRoutes);
 
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
